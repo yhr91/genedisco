@@ -28,13 +28,17 @@ from genedisco.datasets.features.achilles import Achilles
 from typing import Any, AnyStr, Dict, List, Tuple, Union, Optional
 from genedisco.datasets.features.string_embedding import STRINGEmbedding
 from genedisco.evaluation.evaluator import Evaluator as Evaluator_HitRatio
+from genedisco.datasets.screens.belk_2022 import Belk2022
 from genedisco.datasets.screens.zhuang_2019_nk_cancer import Zhuang2019NKCancer
 from genedisco.datasets.screens.schmidt_2021_t_cells_il2 import Schmidt2021TCellsIL2
 from genedisco.datasets.screens.sanchez_2021_neurons_tau import Sanchez2021NeuronsTau
 from genedisco.datasets.screens.schmidt_2021_t_cells_ifng import Schmidt2021TCellsIFNg
 from genedisco.datasets.features.ccle_protein_quantification import CCLEProteinQuantification
 from genedisco.datasets.screens.zhu_2021_sarscov2_host_factors import Zhu2021SARSCoV2HostFactors
-
+from genedisco.datasets.screens.carnevale_2022_Adenosine import Carnevale2022Adenosine
+from genedisco.datasets.screens.carnevale_2022_Tacrolimus import Carnevale2022Tacrolimus
+from genedisco.datasets.screens.carnevale_2022_Cyclosporine import Carnevale2022Cyclosporine
+from genedisco.datasets.screens.carnevale_2022_TGFb import Carnevale2022TGFb
 
 SklearnRandomForestRegressor = meta_models.SklearnRandomForestRegressor
 
@@ -64,7 +68,10 @@ class SingleCycleApplication(sp.AbstractBaseApplication):
     DATASET_NAMES = [
         "shifrut_2018", "schmidt_2021_ifng",
         "schmidt_2021_il2", "zhuang_2019_nk",
-        "sanchez_2021_tau", "zhu_2021_sarscov2"
+        "sanchez_2021_tau", "zhu_2021_sarscov2",
+        "belk_2022", "carnevale_2022_Adenosine",
+        "carnevale_2022_TGFb", "carnevale_2022_Cyclosporine",
+        "carnevale_2022_Tacrolimus"
     ]
 
     FEATURE_SET_NAMES = ["achilles", "ccle", "string"]
@@ -216,6 +223,16 @@ class SingleCycleApplication(sp.AbstractBaseApplication):
             dataset_y = Sanchez2021NeuronsTau.load_data(cache_directory)
         elif dataset_name == SingleCycleApplication.DATASET_NAMES[5]:
             dataset_y = Zhu2021SARSCoV2HostFactors.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[6]:
+            dataset_y = Belk2022.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[7]:
+            dataset_y = Carnevale2022Adenosine.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[8]:
+            dataset_y = Carnevale2022TGFb.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[9]:
+            dataset_y = Carnevale2022Cyclosporine.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[10]:
+            dataset_y = Carnevale2022Tacrolimus.load_data(cache_directory)
         else:
             raise NotImplementedError(f"{dataset_name} is not implemented.")
         return dataset_y

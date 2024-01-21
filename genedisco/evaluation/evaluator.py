@@ -32,6 +32,11 @@ from genedisco.datasets.screens.zhuang_2019_nk_cancer import Zhuang2019NKCancer
 from genedisco.datasets.screens.schmidt_2021_t_cells_il2 import Schmidt2021TCellsIL2
 from genedisco.datasets.screens.sanchez_2021_neurons_tau import Sanchez2021NeuronsTau
 from genedisco.datasets.screens.schmidt_2021_t_cells_ifng import Schmidt2021TCellsIFNg
+from genedisco.datasets.screens.carnevale_2022_Adenosine import Carnevale2022Adenosine
+from genedisco.datasets.screens.carnevale_2022_Tacrolimus import Carnevale2022Tacrolimus
+from genedisco.datasets.screens.carnevale_2022_Cyclosporine import Carnevale2022Cyclosporine
+from genedisco.datasets.screens.carnevale_2022_TGFb import Carnevale2022TGFb
+from genedisco.datasets.screens.belk_2022 import Belk2022
 from genedisco.datasets.features.ccle_protein_quantification import CCLEProteinQuantification
 from genedisco.datasets.screens.zhu_2021_sarscov2_host_factors import Zhu2021SARSCoV2HostFactors
 
@@ -134,6 +139,16 @@ def get_dataset_y(dataset_name, cache_directory):
         dataset_y = Sanchez2021NeuronsTau.load_data(cache_directory)
     elif dataset_name == "zhu_2021_sarscov2":
         dataset_y = Zhu2021SARSCoV2HostFactors.load_data(cache_directory)
+    elif dataset_name == "belk_2022":
+        dataset_y = Belk2022.load_data(cache_directory)
+    elif dataset_name == "carnevale_2022_Adenosine":
+        dataset_y = Carnevale2022Adenosine.load_data(cache_directory)
+    elif dataset_name == "carnevale_2022_TGFb":
+        dataset_y = Carnevale2022TGFb.load_data(cache_directory)
+    elif dataset_name == "carnevale_2022_Cyclosporine":
+        dataset_y = Carnevale2022Cyclosporine.load_data(cache_directory)
+    elif dataset_name == "carnevale_2022_Tacrolimus":
+        dataset_y = Carnevale2022Tacrolimus.load_data(cache_directory) 
     else:
         raise NotImplementedError(f"{dataset_name} is not implemented.")
     return dataset_y

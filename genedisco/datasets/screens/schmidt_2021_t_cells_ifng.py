@@ -49,13 +49,16 @@ class Schmidt2021TCellsIFNg(object):
             df = pd.concat([df, df_d2])
             group_by_row_index = df.groupby(df.index)
             df = group_by_row_index.mean()
-
-            gene_names, data = df.index.values.tolist(), df[['pos|lfc']].values.astype(np.float32)
+            
+            gene_names = df.index.values.tolist()
 
             name_converter = HGNCNames(save_directory)
             gene_names = name_converter.update_outdated_gene_names(gene_names)
-            gene_names, idx_start = np.unique(gene_names, return_index=True)
-            data = data[idx_start]
+            df.index = gene_names
+            
+            # Merge duplicate indices by averaging
+            df = df.groupby(df.index).mean()
+            gene_names, data = df.index.values.tolist(), df[['pos|lfc']].values.astype(np.float32)
 
             HDF5Tools.save_h5_file(h5_file,
                                    data,

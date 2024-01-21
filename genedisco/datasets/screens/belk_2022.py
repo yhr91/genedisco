@@ -23,7 +23,7 @@ from slingpy.data_access.data_sources.hdf5_data_source import HDF5DataSource
 from slingpy.data_access.data_sources.abstract_data_source import AbstractDataSource
 
 
-class Schmidt2021TCellsIL2(object):
+class Belk2022(object):
     """
     Data from: CRISPR activation and interference screens in primary human T cells decode cytokine
     regulation. bioRxiv 2021
@@ -38,29 +38,6 @@ class Schmidt2021TCellsIL2(object):
     """
     @staticmethod
     def load_data(save_directory) -> AbstractDataSource:
-        h5_file = os.path.join(save_directory, "schmidt_2021_il2.h5")
-        if not os.path.exists(h5_file):
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            d1_file_path = os.path.join(dir_path, "schmidt_il2_d1.gene_summary.txt")
-            df = pd.read_csv(d1_file_path, sep="\t", index_col="id")
-            d2_file_path = os.path.join(dir_path, "schmidt_il2_d2.gene_summary.txt")
-            df_d2 = pd.read_csv(d2_file_path, sep="\t", index_col="id")
-
-            df = pd.concat([df, df_d2])
-            group_by_row_index = df.groupby(df.index)
-            df = group_by_row_index.mean()
-
-            gene_names, data = df.index.values.tolist(), df[['pos|lfc']].values.astype(np.float32)
-
-            name_converter = HGNCNames(save_directory)
-            gene_names = name_converter.update_outdated_gene_names(gene_names)
-            gene_names, idx_start = np.unique(sorted(gene_names), return_index=True)
-            data = data[idx_start]
-
-            HDF5Tools.save_h5_file(h5_file,
-                                   data,
-                                   "schmidt_2021_il2",
-                                   column_names=["log-fold-change"],
-                                   row_names=gene_names)
+        h5_file = os.path.join(save_directory, "belk_2022.h5")
         data_source = HDF5DataSource(h5_file, duplicate_merge_strategy=sp.MeanMergeStrategy())
         return data_source

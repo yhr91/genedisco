@@ -63,8 +63,14 @@ class Achilles(object):
 
             name_converter = HGNCNames(save_directory)
             gene_names = name_converter.update_outdated_gene_names(gene_names)
-            gene_names, idx_start = np.unique(sorted(gene_names), return_index=True)
-            data = data[idx_start]
+
+            data_df = pd.DataFrame(data)
+            data_df.index = gene_names
+            data_df = data_df.groupby(data_df.index).mean()
+            gene_names, data = data_df.index.values.tolist(), data_df.values.astype(np.float32)
+
+            #gene_names, idx_start = np.unique(sorted(gene_names), return_index=True)
+            #data = data[idx_start]
             HDF5Tools.save_h5_file(h5_file,
                                    data,
                                    "achilles",
