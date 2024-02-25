@@ -23,34 +23,51 @@ from slingpy.data_access.data_sources.hdf5_data_source import HDF5DataSource
 from slingpy.data_access.data_sources.abstract_data_source import AbstractDataSource
 
 
-class Sanchez2021NeuronsTau(object):
+class Schmidt2021TCellsIFNg_Noise(object):
     """
-    Data from: Genome-wide CRISPR screen identifies protein pathways modulating tau protein levels in neurons.
-    Communications Biology 2021
-    https://www.nature.com/articles/s42003-021-02272-1#MOESM4
+    Data from: CRISPR activation and interference screens in primary human T cells decode cytokine
+    regulation. bioRxiv 2021
+    https://www.biorxiv.org/content/10.1101/2021.05.11.443701v1
+    GEOS URL: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE174292
 
-    LICENSE: https://creativecommons.org/licenses/by/4.0/
+    Commands:
+    mageck test -k GSE174255_reads_A.txt -t 30_DolcettoSetA_Donor1_IFNG_high -c 29_DolcettoSetA_Donor1_IFNG_low -n schmidt_ifng_d1
+    mageck test -k GSE174255_reads_A.txt -t 42_DolcettoSetA_Donor2_IFNG_high -c 41_DolcettoSetA_Donor2_IFNG_low -n schmidt_ifng_d2
+
+    LICENSE: https://www.ncbi.nlm.nih.gov/geo/info/disclaimer.html
     """
     @staticmethod
     def load_data(save_directory) -> AbstractDataSource:
-        h5_file = os.path.join(save_directory, "sanchez_2021_neurons_tau.h5")
+        h5_file = os.path.join(save_directory, "schmidt_2021_ifng_noise.h5")
         if not os.path.exists(h5_file):
             dir_path = os.path.dirname(os.path.realpath(__file__))
-            csv_file_path = os.path.join(dir_path, "sanchezetal2021_21days.csv")
-            df = pd.read_csv(csv_file_path, sep=",", index_col="Symbol")
+            d1_file_path = os.path.join(dir_path, "schmidt_ifng_d1.gene_summary.txt")
+            df = pd.read_csv(d1_file_path, sep="\t", index_col="id")
+            d2_file_path = os.path.join(dir_path, "schmidt_ifng_d2.gene_summary.txt")
+            df_d2 = pd.read_csv(d2_file_path, sep="\t", index_col="id")
+
+            df = pd.concat([df, df_d2])
+            group_by_row_index = df.groupby(df.index)
+            df = group_by_row_index.mean()
+            
+            gene_names = df.index.values.tolist()
 
             name_converter = HGNCNames(save_directory)
             gene_names = name_converter.update_outdated_gene_names(gene_names)
             df.index = gene_names
-
+            
             # Merge duplicate indices by averaging
             df = df.groupby(df.index).mean()
-            gene_names, data = df.index.values.tolist(), df[['RSA_Down']].values.astype(np.float32)
+            gene_names, data = df.index.values.tolist(), df[['pos|lfc']].values.astype(np.float32)
+            
+            # Adding extreme noise
+            #data = np.ones(data.shape)
+            np.random.shuffle(data)
 
             HDF5Tools.save_h5_file(h5_file,
-                                   -data,
-                                   "sanchez_2021_neurons_tau",
-                                   column_names=["RSA"],
+                                   data,
+                                   "schmidt_2021_ifng_noise",
+                                   column_names=["log-fold-change"],
                                    row_names=gene_names)
         data_source = HDF5DataSource(h5_file, duplicate_merge_strategy=sp.MeanMergeStrategy())
         return data_source

@@ -39,7 +39,10 @@ from genedisco.datasets.screens.carnevale_2022_TGFb import Carnevale2022TGFb
 from genedisco.datasets.screens.belk_2022 import Belk2022
 from genedisco.datasets.features.ccle_protein_quantification import CCLEProteinQuantification
 from genedisco.datasets.screens.zhu_2021_sarscov2_host_factors import Zhu2021SARSCoV2HostFactors
-
+from genedisco.datasets.screens.steinhart_2024_crispra_GD2_D22 import Steinhart2024CrispraGD2D22
+from genedisco.datasets.screens.schmidt_2021_t_cells_ifng_noise import Schmidt2021TCellsIFNg_Noise
+from genedisco.datasets.screens.scharenberg_2022 import Scharenberg2022
+from genedisco.datasets.screens.sanchez_2021_down import Sanchez2021Down
 
 class Evaluator(object):
     
@@ -149,6 +152,14 @@ def get_dataset_y(dataset_name, cache_directory):
         dataset_y = Carnevale2022Cyclosporine.load_data(cache_directory)
     elif dataset_name == "carnevale_2022_Tacrolimus":
         dataset_y = Carnevale2022Tacrolimus.load_data(cache_directory) 
+    elif dataset_name == "steinhart_2024_crispra_GD2_D22":
+        dataset_y = Steinhart2024CrispraGD2D22.load_data(cache_directory)   
+    elif dataset_name == "schmidt_2021_ifng_noise":
+        dataset_y = Schmidt2021TCellsIFNg_Noise.load_data(cache_directory)
+    elif dataset_name == "scharenberg_2022":
+        dataset_y = Scharenberg2022.load_data(cache_directory)
+    elif dataset_name == "sanchez_2021_down":
+        dataset_y = Sanchez2021Down.load_data(cache_directory)
     else:
         raise NotImplementedError(f"{dataset_name} is not implemented.")
     return dataset_y

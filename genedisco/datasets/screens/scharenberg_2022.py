@@ -23,34 +23,33 @@ from slingpy.data_access.data_sources.hdf5_data_source import HDF5DataSource
 from slingpy.data_access.data_sources.abstract_data_source import AbstractDataSource
 
 
-class Sanchez2021NeuronsTau(object):
+class Scharenberg2022(object):
     """
-    Data from: Genome-wide CRISPR screen identifies protein pathways modulating tau protein levels in neurons.
-    Communications Biology 2021
-    https://www.nature.com/articles/s42003-021-02272-1#MOESM4
-
-    LICENSE: https://creativecommons.org/licenses/by/4.0/
+    pancreas
     """
     @staticmethod
     def load_data(save_directory) -> AbstractDataSource:
-        h5_file = os.path.join(save_directory, "sanchez_2021_neurons_tau.h5")
+        h5_file = os.path.join(save_directory, "scharenberg_2022.h5")
         if not os.path.exists(h5_file):
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            csv_file_path = os.path.join(dir_path, "sanchezetal2021_21days.csv")
-            df = pd.read_csv(csv_file_path, sep=",", index_col="Symbol")
+            df = pd.read_csv(f'/dfs/user/yhr/AI_RA/research_assistant/datasets/ground_truth_Scharenberg22.csv')
+            df = df.rename(columns={'Gene':'Gene_name'})
 
+            df = df.set_index('Gene_name')
+    
+            gene_names = df.index.values.tolist()
             name_converter = HGNCNames(save_directory)
             gene_names = name_converter.update_outdated_gene_names(gene_names)
             df.index = gene_names
 
             # Merge duplicate indices by averaging
             df = df.groupby(df.index).mean()
-            gene_names, data = df.index.values.tolist(), df[['RSA_Down']].values.astype(np.float32)
+            gene_names, data = df.index.values.tolist(), df[['Score']].values.astype(np.float32)
+
 
             HDF5Tools.save_h5_file(h5_file,
-                                   -data,
-                                   "sanchez_2021_neurons_tau",
-                                   column_names=["RSA"],
-                                   row_names=gene_names)
-        data_source = HDF5DataSource(h5_file, duplicate_merge_strategy=sp.MeanMergeStrategy())
+                           data,
+                           f"scharenberg_2022.h5",
+                           column_names=["Score"],
+                           row_names=gene_names)
+        data_source = HDF5DataSource(h5_file, duplicate_merge_strategy=sp.MeanMergeStrategy())        
         return data_source

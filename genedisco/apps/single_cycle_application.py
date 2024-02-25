@@ -39,6 +39,10 @@ from genedisco.datasets.screens.carnevale_2022_Adenosine import Carnevale2022Ade
 from genedisco.datasets.screens.carnevale_2022_Tacrolimus import Carnevale2022Tacrolimus
 from genedisco.datasets.screens.carnevale_2022_Cyclosporine import Carnevale2022Cyclosporine
 from genedisco.datasets.screens.carnevale_2022_TGFb import Carnevale2022TGFb
+from genedisco.datasets.screens.steinhart_2024_crispra_GD2_D22 import Steinhart2024CrispraGD2D22
+from genedisco.datasets.screens.schmidt_2021_t_cells_ifng_noise import Schmidt2021TCellsIFNg_Noise
+from genedisco.datasets.screens.scharenberg_2022 import Scharenberg2022
+from genedisco.datasets.screens.sanchez_2021_down import Sanchez2021Down
 
 SklearnRandomForestRegressor = meta_models.SklearnRandomForestRegressor
 
@@ -71,7 +75,8 @@ class SingleCycleApplication(sp.AbstractBaseApplication):
         "sanchez_2021_tau", "zhu_2021_sarscov2",
         "belk_2022", "carnevale_2022_Adenosine",
         "carnevale_2022_TGFb", "carnevale_2022_Cyclosporine",
-        "carnevale_2022_Tacrolimus"
+        "carnevale_2022_Tacrolimus", "steinhart_2024_crispra_GD2_D22",
+        "schmidt_2021_ifng_noise", "scharenberg_2022", "sanchez_2021_down"
     ]
 
     FEATURE_SET_NAMES = ["achilles", "ccle", "string"]
@@ -233,6 +238,14 @@ class SingleCycleApplication(sp.AbstractBaseApplication):
             dataset_y = Carnevale2022Cyclosporine.load_data(cache_directory)
         elif dataset_name == SingleCycleApplication.DATASET_NAMES[10]:
             dataset_y = Carnevale2022Tacrolimus.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[11]:
+            dataset_y = Steinhart2024CrispraGD2D22.load_data(cache_directory) 
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[12]:
+            dataset_y = Schmidt2021TCellsIFNg_Noise.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[13]:
+            dataset_y = Scharenberg2022.load_data(cache_directory)
+        elif dataset_name == SingleCycleApplication.DATASET_NAMES[14]:
+            dataset_y = Sanchez2021Down.load_data(cache_directory)
         else:
             raise NotImplementedError(f"{dataset_name} is not implemented.")
         return dataset_y
